@@ -1,110 +1,67 @@
 import json
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.utils.markdown import hbold, hlink
-from aiogram.dispatcher.filters import Text
+import time
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.enums import ParseMode
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.filters import Command
+from aiogram.utils.markdown import hbold, hlink  # Import directly
 from config import token
 from main import get_wokr_list
-import time
 
+# Initialize Bot and Dispatcher
+bot = Bot(token=token)
+dp = Dispatcher()
 
-bot = Bot(token=token, parse_mode=types.ParseMode.HTML)
-dp = Dispatcher(bot)
-
-
-@dp.message_handler(commands="start")
+@dp.message(Command("start"))
 async def start(message: types.Message):
-    start_buttons = ["Java", "Python", "Ruby", "SQL"]
-    keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(*start_buttons)
-
+    start_buttons = [
+        [KeyboardButton(text="Java")],
+        [KeyboardButton(text="Python")],
+        [KeyboardButton(text="Ruby")],
+        [KeyboardButton(text="SQL")]
+    ]
+    keyboard = ReplyKeyboardMarkup(keyboard=start_buttons, resize_keyboard=True)
     await message.answer("Вибери мову програмування яка тебе цікавить", reply_markup=keyboard)
 
+async def send_job_list(message: types.Message, language: str):
+    await message.answer("Очікуйте...", parse_mode=ParseMode.HTML)
+    await get_wokr_list(lng=language)
 
-@dp.message_handler(Text(equals="Python"))
+    with open("work.json", encoding="utf-8") as file:
+        data = json.load(file)
+
+    for index, item in enumerate(data):
+        card = (
+            f'{hlink(item.get("title"), item.get("link"))}\n'  # Use `hlink` directly
+            f'{hbold("Місто: ")}{item.get("city")}\n'
+            f'{hbold("Зарплата: ")}{item.get("salary")}\n'
+        )
+
+        if index % 20 == 0:
+            time.sleep(3)
+
+        await message.answer(card, parse_mode=ParseMode.HTML)
+
+# Handlers for different programming languages
+@dp.message(F.text == "Python")
 async def get_python_list(message: types.Message):
-    await message.answer('Очікуйте...')
+    await send_job_list(message, "python")
 
-    get_wokr_list(lng='python')
-
-    with open('work.json', encoding="utf-8") as file:
-        data = json.load(file)
-
-    for index, item in enumerate(data):
-        card = f'{hlink(item.get("title"), item.get("link"))}\n' \
-              f'{hbold("Місто: ")}{item.get("city")}\n' \
-              f'{hbold("Зарплата: ")}{item.get("salary")}\n' \
-
-        if index % 20 == 0:
-            time.sleep(3)
-
-        await message.answer(card)
-
-
-@dp.message_handler(Text(equals="Java"))
+@dp.message(F.text == "Java")
 async def get_java_list(message: types.Message):
-    await message.answer('Очікуйте...')
+    await send_job_list(message, "Java")
 
-    get_wokr_list(lng='Java')
-
-    with open('work.json', encoding="utf-8") as file:
-        data = json.load(file)
-
-    for index, item in enumerate(data):
-        card = f'{hlink(item.get("title"), item.get("link"))}\n' \
-               f'{hbold("Місто: ")}{item.get("city")}\n' \
-               f'{hbold("Зарплата: ")}{item.get("salary")}\n' \
-
-
-        if index % 20 == 0:
-            time.sleep(3)
-
-        await message.answer(card)
-
-
-@dp.message_handler(Text(equals="Ruby"))
+@dp.message(F.text == "Ruby")
 async def get_ruby_list(message: types.Message):
-    await message.answer('Очікуйте...')
+    await send_job_list(message, "Ruby")
 
-    get_wokr_list(lng='Ruby')
-
-    with open('work.json', encoding="utf-8") as file:
-        data = json.load(file)
-
-    for index, item in enumerate(data):
-        card = f'{hlink(item.get("title"), item.get("link"))}\n' \
-               f'{hbold("Місто: ")}{item.get("city")}\n' \
-               f'{hbold("Зарплата: ")}{item.get("salary")}\n' \
-
-
-        if index % 20 == 0:
-            time.sleep(3)
-
-        await message.answer(card)
-
-
-@dp.message_handler(Text(equals="SQL"))
+@dp.message(F.text == "SQL")
 async def get_sql_list(message: types.Message):
-    await message.answer('Очікуйте...')
+    await send_job_list(message, "SQL")
 
-    get_wokr_list(lng='SQL')
-
-    with open('work.json', encoding="utf-8") as file:
-        data = json.load(file)
-
-    for index, item in enumerate(data):
-        card = f'{hlink(item.get("title"), item.get("link"))}\n' \
-               f'{hbold("Місто: ")}{item.get("city")}\n' \
-               f'{hbold("Зарплата: ")}{item.get("salary")}\n' \
-
-        if index % 20 == 0:
-            time.sleep(3)
-
-        await message.answer(card)
-
-
+# Main function to start polling
 def main():
-    executor.start_polling(dp)
+    dp.run_polling(bot)
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
