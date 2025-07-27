@@ -44,9 +44,8 @@ class JSONJobRepository(JobRepository):
     """Repository that writes job listings to a JSON file on disk.
 
     The jobs are serialised into a list of dictionaries using the
-    dataclass fields. This implementation performs synchronous
-    file I/O; if non‑blocking behaviour is required, wrap this call
-    in an executor in the service layer.
+    dataclass fields. This implementation performs asynchronous
+    file I/O using aiofiles, ensuring non-blocking behavior.
     """
 
     async def save_jobs(self, jobs: Iterable[Job], file_path: str | None = None) -> None:
