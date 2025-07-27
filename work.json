@@ -1,142 +1,142 @@
 [
-    {
-        "title": "MS SQL Software Engineer",
-        "city": "Одеса, віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "Ecentria Is the Destination for All Things Gear.Thousands of brands. Millions of products. Countless how-to guides and reviews. All powered by our proprietary eBusiness Platform and driven by our unrivaled expertise.",
-        "link": "https://jobs.dou.ua/companies/ecentria-group/vacancies/54197/?from=list_hot"
-    },
-    {
-        "title": "SQL developer (Middle)",
-        "city": "Київ, Одеса, Рівне, Житомир, Запоріжжя, Тбілісі (Грузія), віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "Virtuace on behalf of our client — American insurance company is looking for a SQL Developer to join our team.",
-        "link": "https://jobs.dou.ua/companies/virtuace-inc/vacancies/187297/"
-    },
-    {
-        "title": "Database Administrator (MS SQL)",
-        "city": "Київ",
-        "salary": "Зарплата не вказана",
-        "info": "Metinvest Digital — українська ІТ-компанія, що спеціалізується на цифровий трансформації великого бізнесу і реалізує проєкти в Україні, Європі та Північній Америці.",
-        "link": "https://jobs.dou.ua/companies/metinvest-digital/vacancies/188658/"
-    },
-    {
-        "title": "MS SQL/Html/CSS — разработчик",
-        "city": "Дніпро, віддалено",
-        "salary": "від $400",
-        "info": "Новый проект в сфере b2b для очень малого, малого и среднего бизнеса.SaaS-модель.",
-        "link": "https://jobs.dou.ua/companies/sunapi/vacancies/149995/"
-    },
-    {
-        "title": "MS SQL Developer",
-        "city": "Київ",
-        "salary": "Зарплата не вказана",
-        "info": "Ми шукаємо саме вас, людей, які закохані у свою професію, прагнуть працювати з крутими проектами та мати змогу реалізовувати свої ідеї.Так, усім цим ви можете займатись і в іншій компанії, але в нашій групі компаній Join UP!",
-        "link": "https://jobs.dou.ua/companies/skyup-airlines/vacancies/174031/"
-    },
-    {
-        "title": "MS SQL Database developer",
-        "city": "Київ, Харків, віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "We are NeoGames, a technology-driven innovator and a global leader of iLottery solutions and services to the national and state- regulated lotteries.",
-        "link": "https://jobs.dou.ua/companies/neogames/vacancies/135188/"
-    },
-    {
-        "title": "SQL developer",
-        "city": "Харків",
-        "salary": "Зарплата не вказана",
-        "info": "We work directly with an American telecom reseller company that specializes in providing VoIP services, data services, and Plain Old Telephone services (POTS) serving customers all over the USA.",
-        "link": "https://jobs.dou.ua/companies/team-international/vacancies/189341/"
-    },
-    {
-        "title": ".Net developer (C#/XAML/SQL)",
-        "city": "Харків, віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "We are looking for Software Engineer with Microsoft Stack (C#/XAML/SQL).",
-        "link": "https://jobs.dou.ua/companies/integrio-systems/vacancies/172806/"
-    },
-    {
-        "title": "Middle DataBase Engineer (MS SQL); ID 73781",
-        "city": "Львів",
-        "salary": "Зарплата не вказана",
-        "info": "WE ARESoftServe is a team of 12,000+ thinkers and makers, true professionals, and good people. We understand that the best way to build our future is to help you build yours.",
-        "link": "https://jobs.dou.ua/companies/softserve/vacancies/193907/"
-    },
-    {
-        "title": "PL/SQL Developer",
-        "city": "Київ, Харків, віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "Продуктовая и сервисная IT-компания CS — крупнейший поставщик IT-решений и высокотехнологичного оборудования в сфере финтеха, приглашает на работу PL/SQL DeveloperОбязанности: — Создание и развитие приложений Enterprise уровня для банковского и финансового рынковТребования:...",
-        "link": "https://jobs.dou.ua/companies/cs-ltd/vacancies/193674/"
-    },
-    {
-        "title": "SQL Developer",
-        "city": "Прага (Чехія), віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "DETAILS:Schedule: full-time, remoteExperience: 5+ years with MS SQL/T-SQLClient: Czech RepublicTeam: 3 pplStart: ASAPEnglish: upper+YOU HAVE: • 5+ years of experience with MS SQL/T-SQL• MS SQL/T-SQL — 90% of the work• .NET 4.6+/WCF — 10% of the work• Advanced EnglishPROJECT...",
-        "link": "https://jobs.dou.ua/companies/whirrcrew/vacancies/193443/"
-    },
-    {
-        "title": "Medior/Senior PHP/SQL Developer",
-        "city": "Київ",
-        "salary": "Зарплата не вказана",
-        "info": "What are you going to do?If you are an ambitios, goal-oriented and experienced developer, welcome to the growing team!Our customer is an actively developing marketing company in Europe.",
-        "link": "https://jobs.dou.ua/companies/phoundry/vacancies/193384/"
-    },
-    {
-        "title": "SQL/HANA developer",
-        "city": "віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "Infopulse is currently looking for a SQL/HANA developer.We are looking for talented, enthusiastic, results-oriented professionals to join our team and develop a challenging and dynamic business project (a reporting system based on SAP products).",
-        "link": "https://jobs.dou.ua/companies/infopulse/vacancies/192964/"
-    },
-    {
-        "title": "Junior/Middle BI (SQL) Developer",
-        "city": "Харків",
-        "salary": "Зарплата не вказана",
-        "info": "Client Implementation team transfers clients who used SQL databases to Vertica and OLAPThe syntax changes, sometimes there are simply no alternative functions and you need to come up with a workaround.",
-        "link": "https://jobs.dou.ua/companies/medeanalytics-inc/vacancies/121315/"
-    },
-    {
-        "title": "Middle QA Engineer (with SQL)",
-        "city": "Харків",
-        "salary": "Зарплата не вказана",
-        "info": "Knowledge of software testing process, test types and test technicsStrong knowledge and experience in manual web testing (at least 1 year)Experience/knowledge in defect report creation/verification with bug-tracking systemsGood SQL knowledgeGood spoken and written English...",
-        "link": "https://jobs.dou.ua/companies/medeanalytics-inc/vacancies/118248/"
-    },
-    {
-        "title": "SQL/HANA developer (ID: 10840)",
-        "city": "віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "Infopulse is currently looking for a SQL/HANA developer.We are looking for talented, enthusiastic, results-oriented professionals to join our team and develop a challenging and dynamic business project (a reporting system based on SAP products).",
-        "link": "https://jobs.dou.ua/companies/infopulse/vacancies/188218/"
-    },
-    {
-        "title": "Senior Data Base developer (MS SQL Server)",
-        "city": "Київ",
-        "salary": "Зарплата не вказана",
-        "info": "About usCQG, Inc. was founded more than 40 years ago in the United States. We are one of the world leaders in the delivery of market data and financial information, analysis technologies and stock trading.",
-        "link": "https://jobs.dou.ua/companies/cqg/vacancies/112957/"
-    },
-    {
-        "title": "Спеціаліст другої лінії підтримки з глибоким знанням SQL",
-        "city": "Київ, віддалено",
-        "salary": "Зарплата не вказана",
-        "info": "Про компанію:IPLAND — українська продуктова IT-компанія, яка надає IT-сервіси по всьому світу.",
-        "link": "https://jobs.dou.ua/companies/ipland/vacancies/188305/"
-    },
-    {
-        "title": "MS SQL Developer (SSRS)",
-        "city": "Київ, віддалено",
-        "salary": "$3000–4000",
-        "info": "Fastly growing portfolio of .NET products transitioning to Azure stack. Full range of tasks from supporting main product, developing new features, re-designing existing components, ensuring high performance for constantly growing data volume.",
-        "link": "https://jobs.dou.ua/companies/newground/vacancies/145831/"
-    },
-    {
-        "title": "Delphi, SQL & Java Developer",
-        "city": "за кордоном, віддалено",
-        "salary": "від $2000",
-        "info": "С 10.01.2022 мы ищем нового сотрудника для участия в проекте по:Задачи:Разработке и оптимированию ERP-Системы, а так же приложениям в сфере логистики.Работа в команде с 5 разработчиками.Поддержка тестеров и создание test-cases.Контакт с консультантами по техническим вопросам.",
-        "link": "https://jobs.dou.ua/companies/yevgen-getman-it-dienstleistungen-und-tontechnik/vacancies/171342/"
-    }
+  {
+    "title": "Senior React & Python Developer",
+    "city": "віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "Are you a talented Senior Developer looking for a remote job that lets you show your skills and get decent compensation? Look no further than Lemon.io — the marketplace that connects you with hand-picked startups in the US and Europe.",
+    "link": "https://jobs.dou.ua/companies/lemon-io/vacancies/316976/?from=list_hot"
+  },
+  {
+    "title": "Senior LLM & Python Developer",
+    "city": "віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "Are you a talented Senior AI Engineer looking for a remote job that lets you show your skills and get decent compensation? Look no further than Lemon.io — the marketplace that connects you with hand-picked startups in the US and Europe.",
+    "link": "https://jobs.dou.ua/companies/lemon-io/vacancies/316981/?from=list_hot"
+  },
+  {
+    "title": "Python Software Engineer for Embedded Devices",
+    "city": "Львів",
+    "salary": "$1000–1700",
+    "info": "Are you excited by the idea of programming the tools that connect software to hardware? We are seeking a highly skilled Python Software Engineer with expertise in working with serial communication protocols (e.g., UART, SPI, I2C) using Python-based tools.",
+    "link": "https://jobs.dou.ua/companies/infineon-technologies/vacancies/316350/?from=list_hot"
+  },
+  {
+    "title": "Middle Back-End Developer (Python 3)",
+    "city": "віддалено",
+    "salary": "$2000–2700",
+    "info": "Company: Litero.aiLocation: RemoteEmployment Type: Full-Time (through individual entrepreneurs)  About Us:  Litero.ai is an AI startup that intends to change the way students write, research and learn.",
+    "link": "https://jobs.dou.ua/companies/litero-ai/vacancies/315711/?from=list_hot"
+  },
+  {
+    "title": "Python Engineer (Django)",
+    "city": "We're a fully remote team thus we do not have an office. Most of our developers are based in Ukraine., віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "Let’s start with what PLANEKS offers: 0. Fast and comfortable hiring process.1. 100% remote work opportunity and flexitime — choose working hours between 8:00-20:00.2.",
+    "link": "https://jobs.dou.ua/companies/planeks/vacancies/291252/?from=list_hot"
+  },
+  {
+    "title": "Middle Python Developer",
+    "city": "віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "We are looking for an experienced Python Developer to work on projects in the EdTech domain. You will join our passionate team of 150+ people who are building the next generation of online education solutions by leveraging the most cutting-edge technologies.",
+    "link": "https://jobs.dou.ua/companies/raccoon-gang/vacancies/317549/"
+  },
+  {
+    "title": "Python Developer (AI/LLM)",
+    "city": "Львів, Лондон (Велика Британія), віддалено",
+    "salary": "від $1000",
+    "info": "We’re looking for an ambitious Python Developer to join our small high-performing team. You’ll work directly with our CTO to help deliver cutting-edge RAG and Agentic AI systems to global tech, finance, healthcare, and gaming companies.",
+    "link": "https://jobs.dou.ua/companies/serenitygpt/vacancies/317422/"
+  },
+  {
+    "title": "Senior QA Automation Engineer — Networking Simulation Platform (Python)",
+    "city": "Київ, віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "We are looking for a Senior QA Software Engineer who is passionate about networking and eager to dive into hands-on testing.Our team ensures the quality of NVIDIA’s network solutions through feature analysis, manual, and Python-based automated testing.",
+    "link": "https://jobs.dou.ua/companies/nvidia/vacancies/313243/"
+  },
+  {
+    "title": "Senior Python/Django Engineer — Voice AI Assistant (VoIP Integration)",
+    "city": "Київ, Черкаси, за кордоном, віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "At SPD Technology, we bring together a team of like-minded people who are driven by the desire to bring value through their work, united in their commitment to high performance and delivering custom, cutting-edge tech solutions that drive clients’ growth.",
+    "link": "https://jobs.dou.ua/companies/spd-technology/vacancies/317444/"
+  },
+  {
+    "title": "Senior Python developer",
+    "city": "Київ, Дніпро, Ларнака (Кіпр), Варшава (Польща), віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "We’re looking for an experienced Python developer to join our team.",
+    "link": "https://jobs.dou.ua/companies/yalantis/vacancies/240514/"
+  },
+  {
+    "title": "TypeScript/Python Developer with AI Experience",
+    "city": "Львів, за кордоном, віддалено",
+    "salary": "$4000–6000",
+    "info": "Details: we are looking for an experienced Software Engineer specializing in Large Language Models (LLMs) integrations, such as GPT-4, Claude-3.5 sonet, and similar.",
+    "link": "https://jobs.dou.ua/companies/coxit/vacancies/291410/"
+  },
+  {
+    "title": "Senior Python Developer in Virtual Services Team (#917)",
+    "city": "віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "Your expertise:At least 4 years of professional experienceFrameworks: Proficiency in Django, Flask, FastAPIPython ORMs: Hands-on with SQLAlchemy, Django ORM, PonyORM, or SQLObjectDeep understanding of Python’s asynchronous programming featuresHands-on experience...",
+    "link": "https://jobs.dou.ua/companies/zone3000/vacancies/289759/"
+  },
+  {
+    "title": "Senior Software Engineer (Ruby on Rails & Python)",
+    "city": "Львів",
+    "salary": "Зарплата не вказана",
+    "info": "About usAt ablefy, we believe that passion can turn into a career for anyone! With our cloud-based SaaS platform solution, ablefy.io, we offer an easy and efficient way for everyone to create and sell digital products and online courses.",
+    "link": "https://jobs.dou.ua/companies/ablefy/vacancies/313226/"
+  },
+  {
+    "title": "Python developer",
+    "city": "віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "Admiral Studios is a fast-growing Ukrainian IT outsourcing company, specializing in web development, mobile development, UI/UX, and SEO.We embrace the latest and most advanced technologies: Node.js, React, Laravel, Shopify, Python, and WordPress.",
+    "link": "https://jobs.dou.ua/companies/admiral-studios/vacancies/317366/"
+  },
+  {
+    "title": "Python AI multi-agent engineer",
+    "city": "віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "Шукаємо досвідченого Python AI Engineer, який/ка має глибокі знання в галузі великих мовних моделей та мультиагентних систем. Ваша основна роль полягає в створенні та оптимізації мультиагентних рішень, а також у допомозі та консультаціях колег щодо розробки таких систем.",
+    "link": "https://jobs.dou.ua/companies/tapok/vacancies/304809/"
+  },
+  {
+    "title": "Senior AQA Engineer (Python)",
+    "city": "Львів, Івано-Франківськ, Гданськ (Польща), Краків (Польща), Варшава (Польща), Вроцлав (Польща)",
+    "salary": "Зарплата не вказана",
+    "info": "This is us   At Avenga, we believe that human creativity empowers technology that matters.",
+    "link": "https://jobs.dou.ua/companies/avenga/vacancies/317272/"
+  },
+  {
+    "title": "Middle QA Automation Engineer (Python & Appium)",
+    "city": "Київ, Львів, віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "At Promova, we’re redefining language education to make it accessible, personal, and effective for today’s fast-paced world.",
+    "link": "https://jobs.dou.ua/companies/promova/vacancies/317266/"
+  },
+  {
+    "title": "Middle (Senior) C/C++/Python Developer (IoT, Hardware)",
+    "city": "Київ",
+    "salary": "Зарплата не вказана",
+    "info": "Stellar Jet — це R&D бюро, що розробляє критично важливі технології для оборонної галузі, зокрема БПЛА. Наші проєкти вже довели свою ефективність, і ми продовжуємо активну роботу над перспективними розробками.",
+    "link": "https://jobs.dou.ua/companies/stellar-jet/vacancies/317252/"
+  },
+  {
+    "title": "SRE with Python skills @GoDaddy",
+    "city": "Львів, віддалено",
+    "salary": "Зарплата не вказана",
+    "info": "At GoDaddy we are building hypervisor environment based on OpenStack and we are expanding our global team with additional hires in Lviv.We are lookimg for a good SRE with Python background to grow with us.",
+    "link": "https://jobs.dou.ua/companies/lvivit/vacancies/317242/"
+  },
+  {
+    "title": "Junior/Middle Backend Python Developer",
+    "city": "віддалено",
+    "salary": "до $1800",
+    "info": "Zutobi is a global EdTech company offering engaging, innovative digital solutions designed to provide users with accessible and convenient learning experiences. At the moment, our company proudly features 3 diverse applications, each at a different stage of development.",
+    "link": "https://jobs.dou.ua/companies/zutobi/vacancies/280430/"
+  }
 ]
