@@ -16,7 +16,7 @@ is converted into an instance of :class:`Job` defined in
 import httpx
 from bs4 import BeautifulSoup
 
-from .models import Job
+from models import Job
 
 
 class JobScraper:

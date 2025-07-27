@@ -11,8 +11,10 @@ facilitates testing and future extensions.
 import json
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
+from dataclasses import asdict
 
-from .models import Job
+import aiofiles
+from models import Job
 
 
 class JobRepository(ABC):
@@ -57,6 +59,6 @@ class JSONJobRepository(JobRepository):
         """
         path: str = file_path or "work.json"
         # Convert dataclass instances to dictionaries for JSON serialisation
-        data: list[dict] = [job.__dict__ for job in jobs]
-        with open(path, "w", encoding="utf-8") as json_file:
-            json.dump(data, json_file, ensure_ascii=False, indent=4)
+        data: list[dict] = [asdict(job) for job in jobs]
+        async with aiofiles.open(path, "w", encoding="utf-8") as file:
+            await file.write(json.dumps(data, ensure_ascii=False, indent=2))

@@ -7,9 +7,9 @@ adheres to the single‑responsibility principle and enables easy
 substitution of alternate implementations for scraping or storage.
 """
 
-from .models import Job
-from .repository import JobRepository
-from .scraper import JobScraper
+from models import Job
+from repository import JobRepository
+from scraper import JobScraper
 
 
 class JobService:

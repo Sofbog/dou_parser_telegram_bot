@@ -22,10 +22,10 @@ from aiogram.utils.markdown import hbold, hlink
 
 from config import token  # type: ignore  # token defined externally
 
-from .models import Job
-from .repository import JSONJobRepository
-from .scraper import JobScraper
-from .service import JobService
+from models import Job
+from repository import JSONJobRepository
+from scraper import JobScraper
+from service import JobService
 
 
 bot = Bot(token=token)
