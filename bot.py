@@ -20,13 +20,20 @@ from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.markdown import hbold, hlink
 
-from config import token  # type: ignore  # token defined externally
-
 from models import Job
 from repository import JSONJobRepository
 from scraper import JobScraper
 from service import JobService
+import os
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Get token from environment variable
+token = os.getenv("TELEGRAM_TOKEN")
+if not token:
+    raise ValueError("TELEGRAM_TOKEN environment variable is not set")
 
 bot = Bot(token=token)
 dp: Dispatcher = Dispatcher()
