@@ -74,9 +74,8 @@ class JobScraper:
                 unexpected status code.
         """
         url: str = f"{self.base_url}{language}"
-        if not self._client:
-            raise RuntimeError("HTTP client is not initialized. Use 'async with JobScraper()' to initialize it.")
-        response = await self._client.get(url, headers=self._HEADERS)
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url, headers=self._HEADERS)
         if response.status_code != 200:
             raise ValueError(f"Failed to retrieve data: status {response.status_code}")
         html: str = response.text
