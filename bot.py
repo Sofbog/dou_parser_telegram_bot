@@ -8,24 +8,27 @@ logic resides in the ``scraper.py`` module and persistence logic in
 interactions.
 
 Environment:
-    The bot token must be provided via a ``config.py`` module that
-    exposes a ``token`` attribute. See README.md for setup details.
+    The bot token must be provided via a ``TELEGRAM_TOKEN`` environment
+    variable (loaded from ``.env``). See README.md for setup details.
 """
 
 import asyncio
+import logging
+import os
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, F, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.markdown import hbold, hlink
+from dotenv import load_dotenv
 
 from models import Job
 from repository import JSONJobRepository
 from scraper import JobScraper
 from service import JobService
-import os
-from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -86,8 +89,20 @@ async def _send_job_list(message: types.Message, language: str) -> None:
         language: Programming language category to search on DOU.
     """
     await message.answer("Очікуйте...", parse_mode=ParseMode.HTML)
-    # Fetch fresh jobs and persist them via the service layer
-    jobs: list[Job] = await _job_service.get_jobs(language.lower())
+
+    try:
+        jobs: list[Job] = await _job_service.get_jobs(language.lower())
+    except Exception:
+        logger.exception("Failed to fetch jobs for language=%s", language)
+        await message.answer(
+            "Виникла помилка при отриманні вакансій. Спробуйте пізніше.",
+            parse_mode=ParseMode.HTML,
+        )
+        return
+
+    if not jobs:
+        await message.answer("Вакансій не знайдено.", parse_mode=ParseMode.HTML)
+        return
 
     for index, job in enumerate(jobs):
         card: str = (
@@ -96,30 +111,29 @@ async def _send_job_list(message: types.Message, language: str) -> None:
             f"{hbold('Зарплата: ')}{job.salary}"
         )
         if index % 20 == 0 and index != 0:
-            # Respect Telegram rate limits by pausing between batches
             await asyncio.sleep(3)
         await message.answer(card, parse_mode=ParseMode.HTML)
 
 
-@dp.message(lambda m: m.text == "Python")
+@dp.message(F.text == "Python")
 async def handle_python(message: types.Message) -> None:
     """Respond to the 'Python' button by sending Python vacancies."""
     await _send_job_list(message, "python")
 
 
-@dp.message(lambda m: m.text == "Java")
+@dp.message(F.text == "Java")
 async def handle_java(message: types.Message) -> None:
     """Respond to the 'Java' button by sending Java vacancies."""
     await _send_job_list(message, "java")
 
 
-@dp.message(lambda m: m.text == "Ruby")
+@dp.message(F.text == "Ruby")
 async def handle_ruby(message: types.Message) -> None:
     """Respond to the 'Ruby' button by sending Ruby vacancies."""
     await _send_job_list(message, "ruby")
 
 
-@dp.message(lambda m: m.text == "SQL")
+@dp.message(F.text == "SQL")
 async def handle_sql(message: types.Message) -> None:
     """Respond to the 'SQL' button by sending SQL vacancies."""
     await _send_job_list(message, "sql")
@@ -127,6 +141,11 @@ async def handle_sql(message: types.Message) -> None:
 
 def main() -> None:
     """Entry point to start polling for Telegram updates."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    )
+    logger.info("Bot starting...")
     dp.run_polling(bot)
 
 

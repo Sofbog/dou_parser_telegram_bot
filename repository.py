@@ -9,12 +9,18 @@ facilitates testing and future extensions.
 """
 
 import json
+import logging
 from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from dataclasses import asdict
+from pathlib import Path
 
 import aiofiles
 from models import Job
+
+logger = logging.getLogger(__name__)
+
+_DEFAULT_FILE = str(Path(__file__).parent / "work.json")
 
 
 class JobRepository(ABC):
@@ -56,8 +62,8 @@ class JSONJobRepository(JobRepository):
             file_path: Destination filename; defaults to ``"work.json"``
                 if omitted or ``None``.
         """
-        path: str = file_path or "work.json"
-        # Convert dataclass instances to dictionaries for JSON serialisation
+        path: str = file_path or _DEFAULT_FILE
         data: list[dict] = [asdict(job) for job in jobs]
         async with aiofiles.open(path, "w", encoding="utf-8") as file:
             await file.write(json.dumps(data, ensure_ascii=False, indent=2))
+        logger.info("Saved %d jobs to %s", len(data), path)

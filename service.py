@@ -7,9 +7,13 @@ adheres to the single‑responsibility principle and enables easy
 substitution of alternate implementations for scraping or storage.
 """
 
+import logging
+
 from models import Job
 from repository import JobRepository
 from scraper import JobScraper
+
+logger = logging.getLogger(__name__)
 
 
 class JobService:
@@ -49,6 +53,7 @@ class JobService:
             A list of :class:`Job` instances representing the fresh
             job listings for the requested language.
         """
+        logger.info("Requesting jobs for language=%s", language)
         jobs: list[Job] = await self._scraper.fetch_jobs(language)
         await self._repository.save_jobs(jobs, file_path)
         return jobs

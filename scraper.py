@@ -13,10 +13,19 @@ is converted into an instance of :class:`Job` defined in
 ``models.py``.
 """
 
+import logging
+
 import httpx
 from bs4 import BeautifulSoup
 
 from models import Job
+
+logger = logging.getLogger(__name__)
+
+ALLOWED_LANGUAGES: set[str] = {
+    "python", "java", "ruby", "sql", "javascript", "c++", "c#",
+    "php", "go", "kotlin", "swift", "scala", "rust", "typescript",
+}
 
 
 class JobScraper:
@@ -73,8 +82,12 @@ class JobScraper:
             ValueError: If the HTTP request fails or returns an
                 unexpected status code.
         """
+        if language not in ALLOWED_LANGUAGES:
+            raise ValueError(f"Unsupported language: {language!r}")
+
         url: str = f"{self.base_url}{language}"
-        async with httpx.AsyncClient() as client:
+        logger.info("Fetching jobs from %s", url)
+        async with httpx.AsyncClient(timeout=httpx.Timeout(15.0)) as client:
             response = await client.get(url, headers=self._HEADERS)
         if response.status_code != 200:
             raise ValueError(f"Failed to retrieve data: status {response.status_code}")
@@ -107,4 +120,6 @@ class JobScraper:
             )
 
             jobs.append(Job(title=title, city=city, salary=salary, info=info, link=link))
+
+        logger.info("Parsed %d jobs for language=%s", len(jobs), language)
         return jobs
