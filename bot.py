@@ -15,16 +15,15 @@ Environment:
 import asyncio
 import logging
 import os
-import time
-from typing import Any, Awaitable, Callable
 
-from aiogram import BaseMiddleware, Bot, Dispatcher, F, types
+from aiogram import Bot, Dispatcher, F, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, TelegramObject
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.markdown import hbold, hlink
 from dotenv import load_dotenv
 
+from middleware import RateLimitMiddleware
 from models import Job
 from repository import JSONJobRepository
 from scraper import JobScraper
@@ -32,38 +31,9 @@ from service import JobService
 
 logger = logging.getLogger(__name__)
 
-_RATE_LIMIT_SECONDS: float = 30.0
-
-
-class RateLimitMiddleware(BaseMiddleware):
-    """Middleware that limits users to one request per ``_RATE_LIMIT_SECONDS``."""
-
-    def __init__(self) -> None:
-        self._last_request: dict[int, float] = {}
-
-    async def __call__(
-        self,
-        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
-        event: TelegramObject,
-        data: dict[str, Any],
-    ) -> Any:
-        if not isinstance(event, types.Message):
-            return await handler(event, data)
-
-        user_id = event.from_user.id
-        now = time.monotonic()
-        last = self._last_request.get(user_id, 0.0)
-        remaining = _RATE_LIMIT_SECONDS - (now - last)
-
-        if remaining > 0:
-            await event.answer(
-                f"Зачекайте {remaining:.0f} сек. перед наступним запитом.",
-                parse_mode=ParseMode.HTML,
-            )
-            return None
-
-        self._last_request[user_id] = now
-        return await handler(event, data)
+# Languages available for selection. Adding a new language here
+# automatically creates the keyboard button and message handler.
+SUPPORTED_LANGUAGES: list[str] = ["Java", "Python", "Ruby", "SQL"]
 
 # Load environment variables from .env file
 load_dotenv()
@@ -77,33 +47,18 @@ bot = Bot(token=token)
 dp: Dispatcher = Dispatcher()
 dp.message.middleware(RateLimitMiddleware())
 
-# Initialise service layer with its dependencies. Using local imports
-# avoids circular references and permits dependency injection for testing.
 _job_service: JobService = JobService(JobScraper(), JSONJobRepository())
 
 
 def _build_start_keyboard() -> ReplyKeyboardMarkup:
-    """Construct the reply keyboard for language selection.
-
-    Returns:
-        ReplyKeyboardMarkup: A keyboard markup with language options.
-    """
-    buttons: list[list[KeyboardButton]] = [
-        [KeyboardButton(text="Java")],
-        [KeyboardButton(text="Python")],
-        [KeyboardButton(text="Ruby")],
-        [KeyboardButton(text="SQL")],
-    ]
+    """Construct the reply keyboard for language selection."""
+    buttons = [[KeyboardButton(text=lang)] for lang in SUPPORTED_LANGUAGES]
     return ReplyKeyboardMarkup(keyboard=buttons, resize_keyboard=True)
 
 
 @dp.message(Command("start"))
 async def handle_start(message: types.Message) -> None:
-    """Handle the ``/start`` command by displaying language options.
-
-    Args:
-        message: Incoming Telegram message object.
-    """
+    """Handle the ``/start`` command by displaying language options."""
     keyboard = _build_start_keyboard()
     await message.answer(
         "Вибери мову програмування яка тебе цікавить", reply_markup=keyboard
@@ -112,13 +67,6 @@ async def handle_start(message: types.Message) -> None:
 
 async def _send_job_list(message: types.Message, language: str) -> None:
     """Fetch job postings and send them to the user.
-
-    This helper function notifies the user that processing has begun,
-    retrieves the list of vacancies via the :class:`JobService`,
-    persists the data using the configured repository (defaulting to
-    ``work.json``), and then iterates over the results to send each
-    vacancy as a formatted message. To respect Telegram rate limits
-    the function pauses briefly after sending every 20 messages.
 
     Args:
         message: Telegram message from the user requesting jobs.
@@ -151,28 +99,21 @@ async def _send_job_list(message: types.Message, language: str) -> None:
         await message.answer(card, parse_mode=ParseMode.HTML)
 
 
-@dp.message(F.text == "Python")
-async def handle_python(message: types.Message) -> None:
-    """Respond to the 'Python' button by sending Python vacancies."""
-    await _send_job_list(message, "python")
+def _register_language_handlers() -> None:
+    """Register a message handler for each supported language.
+
+    This eliminates handler duplication — adding a language to
+    ``SUPPORTED_LANGUAGES`` is the only change needed.
+    """
+    for lang in SUPPORTED_LANGUAGES:
+
+        async def handler(message: types.Message, _lang: str = lang) -> None:
+            await _send_job_list(message, _lang)
+
+        dp.message.register(handler, F.text == lang)
 
 
-@dp.message(F.text == "Java")
-async def handle_java(message: types.Message) -> None:
-    """Respond to the 'Java' button by sending Java vacancies."""
-    await _send_job_list(message, "java")
-
-
-@dp.message(F.text == "Ruby")
-async def handle_ruby(message: types.Message) -> None:
-    """Respond to the 'Ruby' button by sending Ruby vacancies."""
-    await _send_job_list(message, "ruby")
-
-
-@dp.message(F.text == "SQL")
-async def handle_sql(message: types.Message) -> None:
-    """Respond to the 'SQL' button by sending SQL vacancies."""
-    await _send_job_list(message, "sql")
+_register_language_handlers()
 
 
 def main() -> None:

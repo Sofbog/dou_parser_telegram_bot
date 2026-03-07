@@ -13,7 +13,7 @@ import time
 
 from models import Job
 from repository import JobRepository
-from scraper import JobScraper
+from scraper import BaseJobScraper
 
 logger = logging.getLogger(__name__)
 
@@ -32,14 +32,14 @@ class JobService:
     semaphore limits concurrent requests to DOU.
     """
 
-    def __init__(self, scraper: JobScraper, repository: JobRepository) -> None:
+    def __init__(self, scraper: BaseJobScraper, repository: JobRepository) -> None:
         """Create a new service with its dependencies injected.
 
         Args:
             scraper: An instance capable of fetching job listings.
             repository: An instance capable of saving job listings.
         """
-        self._scraper: JobScraper = scraper
+        self._scraper: BaseJobScraper = scraper
         self._repository: JobRepository = repository
         self._cache: dict[str, tuple[float, list[Job]]] = {}
         self._semaphore: asyncio.Semaphore = asyncio.Semaphore(_MAX_CONCURRENT_REQUESTS)
