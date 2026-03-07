@@ -14,6 +14,7 @@ is converted into an instance of :class:`Job` defined in
 """
 
 import logging
+from abc import ABC, abstractmethod
 
 import httpx
 from bs4 import BeautifulSoup
@@ -28,7 +29,16 @@ ALLOWED_LANGUAGES: set[str] = {
 }
 
 
-class JobScraper:
+class BaseJobScraper(ABC):
+    """Abstract interface for job scrapers."""
+
+    @abstractmethod
+    async def fetch_jobs(self, language: str) -> list[Job]:
+        """Fetch job vacancies for the given language."""
+        raise NotImplementedError
+
+
+class JobScraper(BaseJobScraper):
     """Scraper for extracting job listings from the DOU website.
 
     Instances of this class can fetch job vacancies for a given

@@ -7,13 +7,18 @@ adheres to the single‑responsibility principle and enables easy
 substitution of alternate implementations for scraping or storage.
 """
 
+import asyncio
 import logging
+import time
 
 from models import Job
 from repository import JobRepository
-from scraper import JobScraper
+from scraper import BaseJobScraper
 
 logger = logging.getLogger(__name__)
+
+_CACHE_TTL_SECONDS: int = 30 * 60  # 30 minutes
+_MAX_CONCURRENT_REQUESTS: int = 3
 
 
 class JobService:
@@ -22,27 +27,28 @@ class JobService:
     This class encapsulates the workflow of obtaining job data from
     a scraper and storing it via a repository. It provides a single
     entry point for consumers (such as a bot interface) to retrieve
-    fresh listings and persist them. Dependency inversion is
-    achieved by accepting any objects implementing the required
-    interfaces for scraping and persistence.
+    fresh listings and persist them. Results are cached in memory
+    for ``_CACHE_TTL_SECONDS`` to avoid redundant scraping. A
+    semaphore limits concurrent requests to DOU.
     """
 
-    def __init__(self, scraper: JobScraper, repository: JobRepository) -> None:
+    def __init__(self, scraper: BaseJobScraper, repository: JobRepository) -> None:
         """Create a new service with its dependencies injected.
 
         Args:
             scraper: An instance capable of fetching job listings.
             repository: An instance capable of saving job listings.
         """
-        self._scraper: JobScraper = scraper
+        self._scraper: BaseJobScraper = scraper
         self._repository: JobRepository = repository
+        self._cache: dict[str, tuple[float, list[Job]]] = {}
+        self._semaphore: asyncio.Semaphore = asyncio.Semaphore(_MAX_CONCURRENT_REQUESTS)
 
     async def get_jobs(self, language: str, file_path: str | None = None) -> list[Job]:
         """Fetch jobs for a language and persist them using the repository.
 
-        The jobs are returned to the caller after they have been saved
-        via the repository. The destination file path may be provided
-        to influence where the repository writes its data.
+        Returns cached results if available and not expired. Otherwise
+        fetches fresh data (limited by semaphore) and updates the cache.
 
         Args:
             language: Lower‑case language slug (e.g. ``"python"``).
@@ -50,10 +56,20 @@ class JobService:
                 omitted, a default chosen by the repository is used.
 
         Returns:
-            A list of :class:`Job` instances representing the fresh
+            A list of :class:`Job` instances representing the
             job listings for the requested language.
         """
-        logger.info("Requesting jobs for language=%s", language)
-        jobs: list[Job] = await self._scraper.fetch_jobs(language)
+        cached = self._cache.get(language)
+        if cached:
+            cached_at, jobs = cached
+            if time.monotonic() - cached_at < _CACHE_TTL_SECONDS:
+                logger.info("Cache hit for language=%s (%d jobs)", language, len(jobs))
+                return jobs
+
+        logger.info("Fetching fresh jobs for language=%s", language)
+        async with self._semaphore:
+            jobs = await self._scraper.fetch_jobs(language)
+
         await self._repository.save_jobs(jobs, file_path)
+        self._cache[language] = (time.monotonic(), jobs)
         return jobs
