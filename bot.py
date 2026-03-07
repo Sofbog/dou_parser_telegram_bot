@@ -15,11 +15,13 @@ Environment:
 import asyncio
 import logging
 import os
+import time
+from typing import Any, Awaitable, Callable
 
-from aiogram import Bot, Dispatcher, F, types
+from aiogram import BaseMiddleware, Bot, Dispatcher, F, types
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, TelegramObject
 from aiogram.utils.markdown import hbold, hlink
 from dotenv import load_dotenv
 
@@ -29,6 +31,39 @@ from scraper import JobScraper
 from service import JobService
 
 logger = logging.getLogger(__name__)
+
+_RATE_LIMIT_SECONDS: float = 30.0
+
+
+class RateLimitMiddleware(BaseMiddleware):
+    """Middleware that limits users to one request per ``_RATE_LIMIT_SECONDS``."""
+
+    def __init__(self) -> None:
+        self._last_request: dict[int, float] = {}
+
+    async def __call__(
+        self,
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: dict[str, Any],
+    ) -> Any:
+        if not isinstance(event, types.Message):
+            return await handler(event, data)
+
+        user_id = event.from_user.id
+        now = time.monotonic()
+        last = self._last_request.get(user_id, 0.0)
+        remaining = _RATE_LIMIT_SECONDS - (now - last)
+
+        if remaining > 0:
+            await event.answer(
+                f"Зачекайте {remaining:.0f} сек. перед наступним запитом.",
+                parse_mode=ParseMode.HTML,
+            )
+            return None
+
+        self._last_request[user_id] = now
+        return await handler(event, data)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -40,6 +75,7 @@ if not token:
 
 bot = Bot(token=token)
 dp: Dispatcher = Dispatcher()
+dp.message.middleware(RateLimitMiddleware())
 
 # Initialise service layer with its dependencies. Using local imports
 # avoids circular references and permits dependency injection for testing.
