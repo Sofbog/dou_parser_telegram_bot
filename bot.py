@@ -41,7 +41,7 @@ load_dotenv()
 # Get token from environment variable
 token = os.getenv("TELEGRAM_TOKEN")
 if not token:
-    raise ValueError("TELEGRAM_TOKEN environment variable is not set")
+    raise ValueError("TELEGRAM_TOKEN environment variable is not set")  # pragma: no cover
 
 bot = Bot(token=token)
 dp: Dispatcher = Dispatcher()

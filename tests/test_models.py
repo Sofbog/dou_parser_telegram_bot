@@ -2,6 +2,8 @@
 
 from dataclasses import asdict
 
+import pytest
+
 from models import Job
 
 
@@ -29,5 +31,5 @@ def test_job_asdict() -> None:
 def test_job_slots() -> None:
     """Job uses __slots__ so arbitrary attributes cannot be set."""
     job = Job(title="T", city="C", salary="S", info="I", link="L")
-    with __import__("pytest").raises(AttributeError):
+    with pytest.raises(AttributeError):
         job.nonexistent = "x"  # type: ignore[attr-defined]

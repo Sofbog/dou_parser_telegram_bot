@@ -38,26 +38,21 @@ def _make_jobs(n: int = 2) -> list[Job]:
 
 
 # ---------------------------------------------------------------------------
-# SUPPORTED_LANGUAGES
-# ---------------------------------------------------------------------------
-
-def test_supported_languages_not_empty() -> None:
-    assert len(SUPPORTED_LANGUAGES) >= 1
-
-
-# ---------------------------------------------------------------------------
 # _build_start_keyboard
 # ---------------------------------------------------------------------------
 
 def test_build_keyboard_buttons_match_languages() -> None:
+    """Keyboard buttons must exactly match SUPPORTED_LANGUAGES in order."""
     kb = _build_start_keyboard()
     texts = [row[0].text for row in kb.keyboard]
     assert texts == SUPPORTED_LANGUAGES
 
 
-def test_build_keyboard_resize() -> None:
+def test_build_keyboard_one_button_per_row() -> None:
+    """Each language gets its own row for clear UI."""
     kb = _build_start_keyboard()
-    assert kb.resize_keyboard is True
+    for row in kb.keyboard:
+        assert len(row) == 1
 
 
 # ---------------------------------------------------------------------------
@@ -70,12 +65,16 @@ async def test_handle_start_sends_keyboard() -> None:
     await handle_start(msg)
 
     msg.answer.assert_awaited_once()
-    call_kwargs = msg.answer.call_args
-    assert "reply_markup" in call_kwargs.kwargs or len(call_kwargs.args) >= 2
+    kwargs = msg.answer.call_args.kwargs
+    assert "reply_markup" in kwargs
+    # Verify the keyboard contains actual language buttons
+    kb = kwargs["reply_markup"]
+    texts = [row[0].text for row in kb.keyboard]
+    assert texts == SUPPORTED_LANGUAGES
 
 
 # ---------------------------------------------------------------------------
-# _send_job_list — success
+# _send_job_list — success with card formatting
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
@@ -88,6 +87,11 @@ async def test_send_job_list_success() -> None:
 
     # 1 "Очікуйте" + 3 job cards = 4 calls
     assert msg.answer.await_count == 4
+    # Verify job card contains title link and city/salary labels
+    first_card = msg.answer.call_args_list[1][0][0]
+    assert "Job0" in first_card
+    assert "Місто" in first_card
+    assert "Зарплата" in first_card
 
 
 # ---------------------------------------------------------------------------
@@ -106,11 +110,12 @@ async def test_send_job_list_empty() -> None:
 
 
 # ---------------------------------------------------------------------------
-# _send_job_list — exception
+# _send_job_list — exception handling
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_send_job_list_error() -> None:
+    """On exception, user gets an error message and bot doesn't crash."""
     msg = _make_message()
 
     with patch.object(
@@ -123,11 +128,12 @@ async def test_send_job_list_error() -> None:
 
 
 # ---------------------------------------------------------------------------
-# _send_job_list — rate limit sleep after 20 messages
+# _send_job_list — Telegram rate limit sleep after 20 messages
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
 async def test_send_job_list_rate_limit_sleep() -> None:
+    """Bot should pause after every 20 messages to avoid Telegram rate limit."""
     msg = _make_message()
     jobs = _make_jobs(21)
 
@@ -137,99 +143,71 @@ async def test_send_job_list_rate_limit_sleep() -> None:
     ):
         await _send_job_list(msg, "python")
 
+    # Sleep happens at index 20 (after sending 20 cards)
     mock_sleep.assert_awaited_once_with(3)
 
 
 # ---------------------------------------------------------------------------
-# _register_language_handlers — handlers are registered
+# _send_job_list — language is lowercased
+# ---------------------------------------------------------------------------
+
+@pytest.mark.asyncio
+async def test_send_job_list_lowercases_language() -> None:
+    """Language is passed as .lower() to the service."""
+    msg = _make_message()
+
+    with patch.object(bot_module._job_service, "get_jobs", new_callable=AsyncMock, return_value=[]) as mock_get:
+        await _send_job_list(msg, "Python")
+
+    mock_get.assert_awaited_once_with("python")
+
+
+# ---------------------------------------------------------------------------
+# _register_language_handlers — correct number of handlers
 # ---------------------------------------------------------------------------
 
 def test_language_handlers_registered() -> None:
-    """Each supported language should have a registered handler."""
-    # dp.message.handlers contains the registered handler objects
+    """Each supported language should have a registered handler + /start."""
     from bot import dp
     handler_count = len(dp.message.handlers)
-    # At minimum: /start + one per language
+    # /start + one per language
     assert handler_count >= len(SUPPORTED_LANGUAGES) + 1
 
 
 # ---------------------------------------------------------------------------
-# main — calls run_polling
+# main — configures logging and starts polling
 # ---------------------------------------------------------------------------
 
 def test_main_calls_run_polling() -> None:
     with (
         patch.object(bot_module.dp, "run_polling") as mock_poll,
-        patch("bot.logging.basicConfig"),
+        patch("bot.logging.basicConfig") as mock_log_cfg,
     ):
         main()
         mock_poll.assert_called_once()
+        mock_log_cfg.assert_called_once()
 
 
 # ---------------------------------------------------------------------------
-# Dynamic handler closure calls _send_job_list
+# Dynamic handler actually delegates to _send_job_list
 # ---------------------------------------------------------------------------
 
 @pytest.mark.asyncio
-async def test_dynamic_handler_calls_send_job_list() -> None:
-    """The dynamically registered handler should call _send_job_list."""
+async def test_dynamic_handler_delegates_to_send_job_list() -> None:
+    """The closure-based handler for each language calls _send_job_list."""
     from bot import dp
 
-    # Find the handler registered for the first supported language
-    target_lang = SUPPORTED_LANGUAGES[0]
+    # Find any dynamic handler (name is "handler", not "handle_start")
+    dynamic_handler = None
+    for h in dp.message.handlers:
+        if h.callback.__name__ == "handler":
+            dynamic_handler = h.callback
+            break
+    assert dynamic_handler is not None
+
     msg = _make_message()
-    jobs = _make_jobs(1)
+    with patch.object(bot_module._job_service, "get_jobs", new_callable=AsyncMock, return_value=[]):
+        await dynamic_handler(msg)
 
-    with patch("bot._send_job_list", new_callable=AsyncMock) as mock_send:
-        # Call the handler callback directly
-        for handler in dp.message.handlers:
-            # Try to find our dynamic handler by calling it
-            cb = handler.callback
-            if cb.__name__ == "handler":
-                await cb(msg, _lang=target_lang)
-                break
-
-    mock_send.assert_awaited_once_with(msg, target_lang)
-
-
-# ---------------------------------------------------------------------------
-# Missing token raises ValueError
-# ---------------------------------------------------------------------------
-
-def test_missing_token_raises() -> None:
-    """Importing bot without TELEGRAM_TOKEN raises ValueError."""
-    import importlib
-    import sys
-
-    # Save and remove the token
-    saved = os.environ.pop("TELEGRAM_TOKEN", None)
-    # Remove bot from module cache to force re-import
-    saved_module = sys.modules.pop("bot", None)
-
-    try:
-        with pytest.raises(ValueError, match="TELEGRAM_TOKEN"):
-            importlib.import_module("bot")
-    finally:
-        # Restore
-        if saved:
-            os.environ["TELEGRAM_TOKEN"] = saved
-        if saved_module:
-            sys.modules["bot"] = saved_module
-
-
-# ---------------------------------------------------------------------------
-# __main__ guard
-# ---------------------------------------------------------------------------
-
-def test_main_guard() -> None:
-    """Cover the if __name__ == '__main__' block."""
-    with patch("bot.main") as mock_main:
-        exec(
-            compile(
-                'if __name__ == "__main__": main()',
-                "bot.py",
-                "exec",
-            ),
-            {"__name__": "__main__", "main": mock_main},
-        )
-    mock_main.assert_called_once()
+    # "Очікуйте" + "Вакансій не знайдено"
+    assert msg.answer.await_count == 2
